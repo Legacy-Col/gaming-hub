@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #080808;
+    color: #F0F0F0;
+    font-family: 'Rajdhani', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #080808;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #FF2200;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* Cut-corner clip paths — used via className="clip-sm" etc. */
+  .clip-sm {
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+  .clip-md {
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .clip-lg {
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+
+  /* Reusable nav link underline effect */
+  .nav-link {
+    @apply text-gh-muted font-rajdhani font-semibold text-sm tracking-widest uppercase
+           relative transition-colors duration-200 hover:text-gh-text;
+  }
+/* Navbar link underline — was red, now purple */
+.nav-link::after {
+  @apply absolute bottom-[-4px] left-0 w-0 h-[1.5px] bg-gh-purple transition-[width] duration-200;
+}
+
+.nav-link:hover {
+  @apply text-gh-text;
+}
+
+.nav-link:hover::after {
+  @apply w-full;
+}
+    /* Primary button — was red, now purple */
+    .btn-primary {
+      @apply bg-gh-purple text-white font-bebas tracking-widest cursor-pointer clip-md transition-all duration-150 hover:bg-gh-purple-dim hover:-translate-y-px active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    /* Outline button hover — was red, now purple */
+    .btn-outline {
+      @apply bg-transparent text-gh-text font-bebas tracking-widest cursor-pointer border border-gh-border clip-md transition-all duration-200 hover:border-gh-purple hover:text-gh-purple disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+  /* Gold primary button variant */
+  .btn-gold {
+    @apply bg-gh-gold text-black font-bebas tracking-widest cursor-pointer
+           clip-md transition-all duration-150 hover:brightness-90 hover:-translate-y-px;
+  }
+
+    /* Feature card hover — was red, now purple */
+    .feature-card {
+      @apply bg-gh-card border border-gh-border p-6 md:p-8 clip-lg transition-all duration-200 hover:border-gh-purple hover:-translate-y-1;
+    }
+
+  /* Store card */
+  .store-card {
+    @apply bg-gh-card border border-gh-border overflow-hidden
+           transition-all duration-200 hover:border-gh-gold hover:-translate-y-1;
+  }
+
+  /* Token badge */
+  .token-badge {
+    @apply inline-flex items-center gap-1.5 bg-[rgba(255,184,0,0.08)]
+           border border-gh-gold-dim text-gh-gold px-3 py-1
+           text-xs font-mono rounded-sm;
+  }
+
+  /* Section label */
+  .section-label {
+    @apply font-mono text-xs tracking-[3px] mb-2;
+  }
+
+  /* Section heading */
+  .section-heading {
+    @apply font-bebas tracking-wide text-gh-text leading-none;
+  }
+}

@@ -29,99 +29,101 @@ export function useAuth() {
             setError(null)
 
             // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
-                await new Promise(resolve => setTimeout(resolve, 1500))
-                const mockUser = {
-                    id: '1',
-                    username: 'Kaizen',       // ← fixed
-                    email: data.email,
-                    tokens: 500,
-                    joinedAt: new Date().toISOString(),
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
+                {
+                    await new Promise(resolve => setTimeout(resolve, 1500))
+                    const mockUser = {
+                        id: '1',
+                        username: 'Kaizen',       // ← fixed
+                        email: data.email,
+                        tokens: 500,
+                        joinedAt: new Date().toISOString(),
+                    }
+                    login('mock-token-12345', mockUser)
+                    navigate('/dashboard')
+                    return
                 }
-                login('mock-token-12345', mockUser)
+                // ── END MOCK ──
+
+                const response = await api.auth.login(data.email, data.password)
+                login(response.data.token, response.data.user)
                 navigate('/dashboard')
-                return
+
             }
-            // ── END MOCK ──
-
-            const response = await api.auth.login(data.email, data.password)
-            login(response.data.token, response.data.user)
-            navigate('/dashboard')
-
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Login failed')
         } finally {
             setLoading(false)
         }
-    }
+        
+        const handleRegister = async (data: RegisterData) => {
+            try {
+                setLoading(true)
+                setError(null)
 
-    const handleRegister = async (data: RegisterData) => {
-        try {
-            setLoading(true)
-            setError(null)
-
-            // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
-                await new Promise(resolve => setTimeout(resolve, 1500))
-                const mockUser = {
-                    id: '1',
-                    username: data.name,      // ← fixed — schema uses 'name'
-                    email: data.email,
-                    tokens: 0,
-                    joinedAt: new Date().toISOString(),
+                // ── MOCK — remove when backend is ready ──
+                if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
+                    await new Promise(resolve => setTimeout(resolve, 1500))
+                    const mockUser = {
+                        id: '1',
+                        username: data.name,      // ← fixed — schema uses 'name'
+                        email: data.email,
+                        tokens: 0,
+                        joinedAt: new Date().toISOString(),
+                    }
+                    login('mock-token-12345', mockUser)
+                    navigate('/dashboard')        // ← fixed — go to dashboard not login
+                    return
                 }
-                login('mock-token-12345', mockUser)
-                navigate('/dashboard')        // ← fixed — go to dashboard not login
-                return
+                // ── END MOCK ──
+
+                const response = await api.auth.register({
+                    username: data.name,          // ← fixed
+                    email: data.email,
+                    password: data.password,
+                })
+                login(response.data.token, response.data.user)
+                navigate('/dashboard')            // ← fixed
+
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Registration failed')
+            } finally {
+                setLoading(false)
             }
-            // ── END MOCK ──
-
-            const response = await api.auth.register({
-                username: data.name,          // ← fixed
-                email: data.email,
-                password: data.password,
-            })
-            login(response.data.token, response.data.user)
-            navigate('/dashboard')            // ← fixed
-
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Registration failed')
-        } finally {
-            setLoading(false)
         }
-    }
 
-    const handleForgotPassword = async (data: ForgotPasswordData) => {
-        try {
-            setLoading(true)
-            setError(null)
+        const handleForgotPassword = async (data: ForgotPasswordData) => {
+            try {
+                setLoading(true)
+                setError(null)
 
-            // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
-                await new Promise(resolve => setTimeout(resolve, 1500))
-                return
+                // ── MOCK — remove when backend is ready ──
+                if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
+                    await new Promise(resolve => setTimeout(resolve, 1500))
+                    return
+                }
+                // ── END MOCK ──
+
+                await api.auth.forgotPassword(data.email)
+
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to send reset email')
+            } finally {
+                setLoading(false)
             }
-            // ── END MOCK ──
-
-            await api.auth.forgotPassword(data.email)
-
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to send reset email')
-        } finally {
-            setLoading(false)
         }
-    }
 
-    const handleLogout = () => {
-        logout()
-        navigate('/')
-    }
+        const handleLogout = () => {
+            logout()
+            navigate('/')
+        }
 
-    return {
-        ...state,
-        handleLogin,
-        handleRegister,
-        handleForgotPassword,
-        handleLogout,
+        return {
+            ...state,
+            handleLogin,
+            handleRegister,
+            handleForgotPassword,
+            handleLogout,
+        }
     }
 }

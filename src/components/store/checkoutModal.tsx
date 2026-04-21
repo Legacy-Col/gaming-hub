@@ -25,7 +25,7 @@ export function CheckoutModal({ onClose, onSuccess }: CheckoutModalProps) {
             setError(null)
 
             // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
                 await new Promise(resolve => setTimeout(resolve, 2000))
                 setStep('success')
                 return

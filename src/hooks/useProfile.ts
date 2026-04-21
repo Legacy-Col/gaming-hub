@@ -16,7 +16,7 @@ export function useProfile() {
             setSuccess(false)
 
             // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
                 await new Promise(resolve => setTimeout(resolve, 1000))
                 // Update user in context with new data
                 if (user) {
@@ -51,7 +51,7 @@ export function useProfile() {
             setError(null)
 
             // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
                 await new Promise(resolve => setTimeout(resolve, 1000))
                 const mockUrl = URL.createObjectURL(file)
                 if (user) {

@@ -39,7 +39,7 @@ export function useTeam() {
             try {
                 setIsLoading(true)
 // ── MOCK — remove when backend is ready ──
-if (import.meta.env.DEV) {
+if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
     await new Promise(resolve => setTimeout(resolve, 1000))
     
     // Toggle this to test both views:
@@ -70,7 +70,7 @@ if (import.meta.env.DEV) {
             setSuccess(null)
 
             // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
                 await new Promise(resolve => setTimeout(resolve, 1500))
                 const newTeam: TeamDetail = {
                     id:        '99',
@@ -113,7 +113,7 @@ if (import.meta.env.DEV) {
             setSuccess(null)
 
             // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
                 await new Promise(resolve => setTimeout(resolve, 1500))
                 setTeam(FALLBACK_TEAM)
                 setSuccess('Successfully joined the team!')
@@ -139,7 +139,7 @@ if (import.meta.env.DEV) {
             setError(null)
 
             // ── MOCK — remove when backend is ready ──
-            if (import.meta.env.DEV) {
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
                 await new Promise(resolve => setTimeout(resolve, 1000))
                 setTeam(null)
                 return

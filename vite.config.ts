@@ -7,15 +7,15 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
+  build: {
+    sourcemap: false,
+  },
   server: {
     port: 3000,
     proxy: {
-      // Proxy API calls to your backend during development
-      // Change the target to your backend URL
       '/api': {
         target: process.env.VITE_API_BASE_URL || 'http://localhost:8000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
     },
   },

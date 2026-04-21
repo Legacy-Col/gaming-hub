@@ -212,7 +212,7 @@ export function Navbar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div
-          className="md:hidden bg-gh-bg/98 border-t border-gh-border px-4 py-6 flex flex-col gap-5"
+          className="md:hidden bg-gh-bg backdrop-blur-md border-t border-gh-border px-4 py-6 flex flex-col gap-5"
           onClick={e => e.stopPropagation()}
         >
           {NAV_LINKS.map(l => (

@@ -31,19 +31,17 @@ export function useApi<T>(
         setState({ data: res.data, loading: false, error: null })
       }
     } catch (err) {
-      if (mountedRef.current) {
+    if (mountedRef.current) {
         const msg = err instanceof Error ? err.message : 'Unknown error'
         setState(s => ({
-          data: fallback ?? s.data,
-          loading: false,
-          error: import.meta.env.DEV ? null : msg,
+            data: fallback ?? s.data,      // ← always use fallback
+            loading: false,
+            error: null,                   // ← hide error in production too
         }))
-        if (import.meta.env.DEV) {
-          console.warn('[useApi] Using fallback data:', msg)
-        }
-      }
+        console.warn('[useApi] Using fallback data:', msg)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+}
+
   }, deps)
 
   useEffect(() => { run() }, [run])

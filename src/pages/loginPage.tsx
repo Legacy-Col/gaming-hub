@@ -1,13 +1,14 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
-import { loginSchema, type LoginData } from "@/schemas/authSchemas";
-import { useAuth } from "@/hooks/useAuth";
-import logoImg from "@/assets/hub.jpeg";
-
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Link, useNavigate } from "react-router-dom"
+import { loginSchema, type LoginData } from "@/schemas/authSchemas"
+import { useAuth } from "@/hooks/useAuth"
+import logoImg from "@/assets/hub.jpeg"
 
 export function LoginPage() {
     const { handleLogin, isLoading, error } = useAuth()
+    const navigate = useNavigate()
+
     const {
         register,
         handleSubmit,
@@ -17,8 +18,8 @@ export function LoginPage() {
     })
 
     const onSubmit = async (data: LoginData) => {
-        console.log('Form submitted with:', data)  // ← add this
-        await handleLogin(data)
+        const result = await handleLogin(data)
+        if (result?.success) navigate('/dashboard')
     }
 
     return (
@@ -51,7 +52,6 @@ export function LoginPage() {
 
                 {/* Form card */}
                 <div className="bg-gh-card border border-gh-border p-8 clip-lg">
-                    {/* Heading */}
                     <h1 className="font-bebas text-4xl tracking-widest text-gh-text text-center mb-1">
                         WELCOME BACK
                     </h1>
@@ -59,29 +59,26 @@ export function LoginPage() {
                         Log in to your account
                     </p>
 
-                    {/* Form coming soon */}
-                    <form
-                        onSubmit={handleSubmit(onSubmit, (errors) => {
-                            console.log('Validation errors:', errors)  // ← add this
-                        })}
-                        className="flex flex-col gap-4"
-                    >
-                        {/* Username Field*/}
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                        {/* Email */}
                         <div className="flex flex-col gap-2">
                             <label className="font-mono text-[11px] tracking-[2px] uppercase text-gh-muted">
                                 Email
                             </label>
                             <input
                                 {...register("email")}
-                                type="text"
+                                type="email"
                                 placeholder="Enter your email"
                                 className="w-full bg-gh-card2 border border-gh-border text-gh-text font-rajdhani text-base px-4 py-4 outline-none transition-colors duration-200 focus:border-gh-purple placeholder:text-gh-faint"
                             />
-                            {errors.email && <span className="text-xs font-rajdhani text-gh-red mt-0.5">
-                                {errors.email.message}
-                            </span>}
+                            {errors.email && (
+                                <span className="text-xs font-rajdhani text-gh-red mt-0.5">
+                                    {errors.email.message}
+                                </span>
+                            )}
                         </div>
-                        {/* Password Field */}
+
+                        {/* Password */}
                         <div className="flex flex-col gap-2">
                             <label className="font-mono text-[11px] tracking-[2px] uppercase text-gh-muted">
                                 Password
@@ -92,30 +89,30 @@ export function LoginPage() {
                                 placeholder="Enter your password"
                                 className="w-full bg-gh-card2 border border-gh-border text-gh-text font-rajdhani text-base px-4 py-4 outline-none transition-colors duration-200 focus:border-gh-purple placeholder:text-gh-faint"
                             />
-                            {errors.password && <span className="text-xs font-rajdhani text-gh-red mt-0.5">
-                                {errors.password.message}
-                            </span>}
+                            {errors.password && (
+                                <span className="text-xs font-rajdhani text-gh-red mt-0.5">
+                                    {errors.password.message}
+                                </span>
+                            )}
                         </div>
 
-                        {/*Api error messages */}
-                        {error &&
-                            <div className=" bg-[rgba(255,34,0,0.08)] border border-gh-red px-4 py-3">
-                                <p className="font-rajdhani text-sm text-gh-red-dim">
-                                    {error}
-                                </p>
+                        {/* API error */}
+                        {error && (
+                            <div className="bg-[rgba(255,34,0,0.08)] border border-gh-red px-4 py-3">
+                                <p className="font-rajdhani text-sm text-gh-red">{error}</p>
                             </div>
-                        }
+                        )}
 
-                        {/* Submit Button */}
-
+                        {/* Submit */}
                         <button
                             type="submit"
                             disabled={isLoading}
                             className="btn-primary w-full text-lg py-3 mt-2"
                         >
-                            {isLoading ? 'Logging in...' : 'Log In'}
+                            {isLoading ? 'LOGGING IN...' : 'LOG IN'}
                         </button>
                     </form>
+
                     {/* Links */}
                     <div className="mt-6 flex flex-col items-center gap-3">
                         <Link to="/forgot-password"
@@ -124,7 +121,8 @@ export function LoginPage() {
                         </Link>
                         <Link to="/register"
                             className="font-rajdhani text-sm text-gh-muted hover:text-gh-purple transition-colors">
-                            Don't have an account? <span className="text-gh-purple font-semibold">Register</span>
+                            Don't have an account?{' '}
+                            <span className="text-gh-purple font-semibold">Register</span>
                         </Link>
                     </div>
                 </div>

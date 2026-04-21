@@ -20,8 +20,8 @@ export function ForgotPasswordPage() {
     })
 
     const onSubmit = async (data: ForgotPasswordData) => {
-        await handleForgotPassword(data)
-        setSubmitted(true)
+        const result = await handleForgotPassword(data)
+        if (result?.success) setSubmitted(true)
     }
 
     return (

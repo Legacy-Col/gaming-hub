@@ -1,8 +1,9 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { useAuthContext } from "@/context/AuthContext"
 import { api } from "@/lib/api"
 import type { LoginData, RegisterData, ForgotPasswordData } from "@/schemas/authSchemas"
+import {useState} from 'react'
+
+
 
 interface AuthState {
     isLoading: boolean
@@ -11,7 +12,6 @@ interface AuthState {
 
 export function useAuth() {
     const { login, logout } = useAuthContext()
-    const navigate = useNavigate()
     const [state, setState] = useState<AuthState>({
         isLoading: false,
         error: null,
@@ -28,102 +28,95 @@ export function useAuth() {
             setLoading(true)
             setError(null)
 
-            // ── MOCK — remove when backend is ready ──
             if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
-                {
-                    await new Promise(resolve => setTimeout(resolve, 1500))
-                    const mockUser = {
-                        id: '1',
-                        username: 'Kaizen',       // ← fixed
-                        email: data.email,
-                        tokens: 500,
-                        joinedAt: new Date().toISOString(),
-                    }
-                    login('mock-token-12345', mockUser)
-                    navigate('/dashboard')
-                    return
+                await new Promise(resolve => setTimeout(resolve, 1500))
+                const mockUser = {
+                    id: '1',
+                    username: 'Kaizen',
+                    email: data.email,
+                    tokens: 500,
+                    joinedAt: new Date().toISOString(),
                 }
-                // ── END MOCK ──
-
-                const response = await api.auth.login(data.email, data.password)
-                login(response.data.token, response.data.user)
-                navigate('/dashboard')
-
+                login('mock-token-12345', mockUser)
+                return { success: true }
             }
+
+            const response = await api.auth.login(data.email, data.password)
+            login(response.data.token, response.data.user)
+            return { success: true }
+
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Login failed')
+            return { success: false }
         } finally {
             setLoading(false)
         }
-        
-        const handleRegister = async (data: RegisterData) => {
-            try {
-                setLoading(true)
-                setError(null)
+    }
 
-                // ── MOCK — remove when backend is ready ──
-                if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
-                    await new Promise(resolve => setTimeout(resolve, 1500))
-                    const mockUser = {
-                        id: '1',
-                        username: data.name,      // ← fixed — schema uses 'name'
-                        email: data.email,
-                        tokens: 0,
-                        joinedAt: new Date().toISOString(),
-                    }
-                    login('mock-token-12345', mockUser)
-                    navigate('/dashboard')        // ← fixed — go to dashboard not login
-                    return
-                }
-                // ── END MOCK ──
+    const handleRegister = async (data: RegisterData) => {
+        try {
+            setLoading(true)
+            setError(null)
 
-                const response = await api.auth.register({
-                    username: data.name,          // ← fixed
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
+                await new Promise(resolve => setTimeout(resolve, 1500))
+                const mockUser = {
+                    id: '1',
+                    username: data.name,
                     email: data.email,
-                    password: data.password,
-                })
-                login(response.data.token, response.data.user)
-                navigate('/dashboard')            // ← fixed
-
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Registration failed')
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        const handleForgotPassword = async (data: ForgotPasswordData) => {
-            try {
-                setLoading(true)
-                setError(null)
-
-                // ── MOCK — remove when backend is ready ──
-                if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
-                    await new Promise(resolve => setTimeout(resolve, 1500))
-                    return
+                    tokens: 0,
+                    joinedAt: new Date().toISOString(),
                 }
-                // ── END MOCK ──
-
-                await api.auth.forgotPassword(data.email)
-
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to send reset email')
-            } finally {
-                setLoading(false)
+                login('mock-token-12345', mockUser)
+                return { success: true }
             }
-        }
 
-        const handleLogout = () => {
-            logout()
-            navigate('/')
-        }
+            const response = await api.auth.register({
+                username: data.name,
+                email: data.email,
+                password: data.password,
+            })
+            login(response.data.token, response.data.user)
+            return { success: true }
 
-        return {
-            ...state,
-            handleLogin,
-            handleRegister,
-            handleForgotPassword,
-            handleLogout,
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Registration failed')
+            return { success: false }
+        } finally {
+            setLoading(false)
         }
+    }
+
+    const handleForgotPassword = async (data: ForgotPasswordData) => {
+        try {
+            setLoading(true)
+            setError(null)
+
+            if (!import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL.includes('localhost')) {
+                await new Promise(resolve => setTimeout(resolve, 1500))
+                return { success: true }
+            }
+
+            await api.auth.forgotPassword(data.email)
+            return { success: true }
+
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to send reset email')
+            return { success: false }
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleLogout = () => {
+        logout()
+    }
+
+    return {
+        ...state,
+        handleLogin,
+        handleRegister,
+        handleForgotPassword,
+        handleLogout,
     }
 }

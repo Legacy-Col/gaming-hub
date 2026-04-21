@@ -3,10 +3,10 @@ import { api } from '@/lib/api'
 import type { StoreItem, StoreQueryParams } from '@/types'
 
 
-import Headset from '@/assets/store/headsets.jpg'
-import Chair from '@/assets/store/Ergon_chair.jpg'
-import Hoodies from '@/assets/store/Naruto_hoodie.jpg'
-import Gloves from '@/assets/store/Lumi_gloves.jpg'
+import Headset from '@/src/assets/store/headsets.jpg'
+import Chair from '@/src/assets/store/Ergon_chair.jpg'
+import Hoodies from '@/src/assets/store/Naruto_hoodie.jpg'
+import Gloves from '@/src/assets/store/Lumi_gloves.jpg'
 
 
 const FALLBACK: StoreItem[] = [

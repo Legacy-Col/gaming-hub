@@ -8,6 +8,8 @@ import { Store } from '@/components/Store'
 import { CTA } from '@/components/CTA'
 import { Footer } from '@/components/Footer'
 import { FeaturedTournament } from '@/components/tournaments/FeaturedTournaments'
+import { Brands } from '@/components/Brands'
+import { Countries } from '@/components/Countries'
 
 export function LandingPage() {
     return (
@@ -18,9 +20,11 @@ export function LandingPage() {
                 <Features />
                 <Tournaments />
                 <FeaturedTournament />
+                <Brands />
                 <Rankings />
                 <Tokens />
                 <Store />
+                <Countries />
                 <CTA />
             </main>
             <Footer />

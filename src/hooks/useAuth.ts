@@ -36,6 +36,10 @@ export function useAuth() {
                     email: data.email,
                     tokens: 500,
                     joinedAt: new Date().toISOString(),
+                    // MOCK ONLY: log in with any email containing "admin" (e.g. admin@test.com)
+                    // to test admin features locally. The real role always comes from the
+                    // backend once it's connected — this line does nothing in production.
+                    role: data.email.toLowerCase().includes('admin') ? 'admin' as const : 'user' as const,
                 }
                 login('mock-token-12345', mockUser)
                 return { success: true }
@@ -66,6 +70,8 @@ export function useAuth() {
                     email: data.email,
                     tokens: 0,
                     joinedAt: new Date().toISOString(),
+                    // MOCK ONLY — see note in handleLogin above
+                    role: data.email.toLowerCase().includes('admin') ? 'admin' as const : 'user' as const,
                 }
                 login('mock-token-12345', mockUser)
                 return { success: true }

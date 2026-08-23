@@ -21,7 +21,7 @@ const statusStyles = {
 
 export function TournamentDetailPage() {
     const { id } = useParams<{ id: string }>()
-    const { data: tournament, loading, error, refetch } = useTournamentDetail(id ?? '1')
+    const { data: tournament, loading, error, refetch } = useTournamentDetail(id ?? '1', undefined)
     const [activeTab, setActiveTab] = useState<Tab>('bracket')
     const [showModal, setShowModal] = useState(false)
     const [registered, setRegistered] = useState(false)

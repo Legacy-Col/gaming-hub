@@ -14,7 +14,17 @@ import type {
   TournamentRegistration,
   CheckoutPayload,
   TeamDetail,
-  CreateTeamPayload
+  CreateTeamPayload,
+  Article,
+  ArticleQueryParams,
+  CreateArticlePayload,
+  UpdateArticlePayload,
+  CreateTournamentPayload,
+  UpdateTournamentPayload,
+  CreateStoreItemPayload,
+  UpdateStoreItemPayload,
+  AdminCreateTeamPayload,
+  AdminUpdateTeamPayload
 } from '@/types'
 
 
@@ -90,11 +100,29 @@ tournaments: {
             }
         ),
 
-    unregister: (tournamentId: string) =>
+        unregister: (tournamentId: string) =>
         request<{ success: boolean }>(
             `/api/tournaments/${tournamentId}/unregister`,
             { method: 'DELETE' }
         ),
+
+    // ── Admin only — backend must verify requester's role ──
+    create: (payload: CreateTournamentPayload) =>
+        request<TournamentDetail>('/api/admin/tournaments', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        }),
+
+    update: (id: string, payload: UpdateTournamentPayload) =>
+        request<TournamentDetail>(`/api/admin/tournaments/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+        }),
+
+    delete: (id: string) =>
+        request<{ success: boolean }>(`/api/admin/tournaments/${id}`, {
+            method: 'DELETE',
+        }),
 },
 
   // Auth
@@ -154,10 +182,28 @@ store: {
     get: (id: string) =>
         request<StoreItem>(`/api/store/items/${id}`),
 
-    checkout: (payload: CheckoutPayload) =>
+       checkout: (payload: CheckoutPayload) =>
         request<{ orderId: string; message: string }>('/api/store/checkout', {
             method: 'POST',
             body: JSON.stringify(payload),
+        }),
+
+    // ── Admin only ──
+    create: (payload: CreateStoreItemPayload) =>
+        request<StoreItem>('/api/admin/store/items', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        }),
+
+    update: (id: string, payload: UpdateStoreItemPayload) =>
+        request<StoreItem>(`/api/admin/store/items/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+        }),
+
+    delete: (id: string) =>
+        request<{ success: boolean }>(`/api/admin/store/items/${id}`, {
+            method: 'DELETE',
         }),
   },
 
@@ -187,7 +233,7 @@ store: {
     getMyTeam: () =>
         request<TeamDetail>('/api/teams/my-team'),
 
-    uploadLogo: (file: File) => {
+        uploadLogo: (file: File) => {
         const formData = new FormData()
         formData.append('logo', file)
         return request<{ logoUrl: string }>('/api/teams/logo', {
@@ -195,8 +241,63 @@ store: {
             body: formData,
         })
     },
-},
-}
 
+    // ── Admin only — create/edit/remove ANY team, not just your own ──
+    adminCreate: (payload: AdminCreateTeamPayload) =>
+        request<TeamDetail>('/api/admin/teams', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        }),
+
+    adminUpdate: (id: string, payload: AdminUpdateTeamPayload) =>
+        request<TeamDetail>(`/api/admin/teams/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+        }),
+
+    adminDelete: (id: string) =>
+        request<{ success: boolean }>(`/api/admin/teams/${id}`, {
+            method: 'DELETE',
+        }),
+},
+
+  // Articles (admin-authored blog/news content)
+  articles: {
+    // Public — published articles only (backend should filter by status='published'
+    // unless the requester is an authenticated admin)
+    list: (params: ArticleQueryParams = {}) =>
+        request<Article[]>(`/api/articles${buildQuery(params as Record<string, string | number | undefined>)}`),
+
+    get: (slug: string) =>
+        request<Article>(`/api/articles/${slug}`),
+
+    // Admin only — backend must verify requester's role, not just the presence of a token
+    create: (payload: CreateArticlePayload) =>
+        request<Article>('/api/articles', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        }),
+
+    update: (id: string, payload: UpdateArticlePayload) =>
+        request<Article>(`/api/articles/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+        }),
+
+    delete: (id: string) =>
+        request<{ success: boolean }>(`/api/articles/${id}`, {
+            method: 'DELETE',
+        }),
+
+    uploadImage: (file: File) => {
+        const formData = new FormData()
+        formData.append('image', file)
+        return request<{ url: string }>('/api/articles/upload-image', {
+            method: 'POST',
+            body: formData,
+        })
+    },
+  },
+}
 
 export { ApiError }

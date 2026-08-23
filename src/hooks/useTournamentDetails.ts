@@ -45,7 +45,7 @@ const FALLBACK: TournamentDetail = {
     ],
 }
 
-export function useTournamentDetail(id: string) {
+export function useTournamentDetail(id: string, isEditMode: boolean) {
     return useApi<TournamentDetail>(
         () => api.tournaments.get(id),
         FALLBACK,

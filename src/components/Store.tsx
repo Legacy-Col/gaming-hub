@@ -22,7 +22,7 @@ export function Store() {
   return (
     <section id="store" className="px-4 md:px-12 py-20 md:py-28">
       <div className="border-l-[3px] border-gh-red pl-5 mb-10">
-        <p className="section-label text-gh-red">// THE FORGE STORE</p>
+        <p className="section-label text-gh-red">// THE HUB STORE</p>
         <h2 className="section-heading text-4xl md:text-5xl lg:text-6xl">
           GEAR UP.<br />
           <span className="text-gh-muted">GAMING &amp; ANIME MERCH</span>

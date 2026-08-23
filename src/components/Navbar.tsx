@@ -7,6 +7,7 @@ import { TokenBadge } from '@/components/ui/TokenBadge'
 
 
 const NAV_LINKS = [
+  { label: 'Articles', href: '/articles' },
   { label: 'Tournaments', href: '/tournaments' },
   { label: 'Rankings', href: '/rankings' },
   { label: 'Store', href: '/store' },
@@ -69,9 +70,10 @@ function ProfileDropdown({ onClose }: { onClose: () => void }) {
         {[
           { label: 'Dashboard', href: '/dashboard', icon: '⊞' },
           { label: 'Profile', href: '/profile', icon: '👤' },
-          { label: 'My Team', href: '/team', icon: '⚔' },
+                    { label: 'My Team', href: '/team', icon: '⚔' },
           { label: 'Tournaments', href: '/tournaments', icon: '🏆' },
           { label: 'Store', href: '/store', icon: '🎮' },
+          ...(user?.role === 'admin' ? [{ label: 'Admin Dashboard', href: '/admin', icon: '🛠' }] : []),
         ].map(item => (
           <Link
             key={item.href}

@@ -14,10 +14,10 @@ const FALLBACK: StoreItem = {
     reviewCount: 84,
 }
 
-export function useProductDetail(id: string) {
+export function useProductDetail(id: string, enabled: boolean = true) {
     return useApi<StoreItem>(
-        () => api.store.get(id),
+        () => (enabled ? api.store.get(id) : Promise.resolve({ data: FALLBACK, success: true })),
         FALLBACK,
-        [id],
+        [id, enabled],
     )
 }

@@ -73,6 +73,7 @@ export interface User {
   teamId?: string
   tokens: number
   joinedAt: string
+  role?: 'user' | 'admin'
 }
 
 export interface ApiResponse<T> {
@@ -242,3 +243,86 @@ export interface CreateTeamPayload {
     description: string
     logoUrl?:    string
 }
+
+// ── Articles ─────────────────────────────────────────────────────────────────
+export type ArticleStatus = 'draft' | 'published'
+
+export interface Article {
+  id: string
+  slug: string
+  title: string
+  excerpt: string
+  coverImageUrl?: string
+  contentHtml: string
+  authorName: string
+  authorAvatarUrl?: string
+  status: ArticleStatus
+  tags: string[]
+  publishedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ArticleQueryParams {
+  tag?: string
+  page?: number
+  perPage?: number
+}
+
+export interface CreateArticlePayload {
+  title: string
+  excerpt: string
+  contentHtml: string
+  coverImageUrl?: string
+  tags: string[]
+  status: ArticleStatus
+}
+
+export type UpdateArticlePayload = Partial<CreateArticlePayload>
+
+// ── Admin: Tournament management ────────────────────────────────────────────────
+export interface CreateTournamentPayload {
+  title: string
+  game: GameTitle
+  prizePool: string
+  entryFee: string | null
+  tokenCost?: number
+  startDate: string
+  endDate?: string
+  maxTeams: number
+  format: TournamentFormat
+  imageUrl?: string
+  description: string
+  rules: string[]        // tournament regulations, one entry per rule
+}
+
+export type UpdateTournamentPayload = Partial<CreateTournamentPayload> & {
+  status?: TournamentStatus
+}
+
+// ── Admin: Store management ─────────────────────────────────────────────────────
+export interface CreateStoreItemPayload {
+  name: string
+  category: StoreCategory
+  priceNGN: number
+  tokenCost: number
+  imageUrl?: string
+  emoji: string
+  inStock: boolean
+}
+
+export type UpdateStoreItemPayload = Partial<CreateStoreItemPayload>
+
+// ── Admin: Team management ──────────────────────────────────────────────────────
+// Distinct from the player-facing CreateTeamPayload — an admin can create or edit
+// ANY team on the platform and must assign who the captain is.
+export interface AdminCreateTeamPayload {
+  name: string
+  tag: string
+  game: GameTitle
+  description: string
+  logoUrl?: string
+  captainUsername: string
+}
+
+export type AdminUpdateTeamPayload = Partial<AdminCreateTeamPayload>
